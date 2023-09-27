@@ -16,7 +16,9 @@ export default function PageHeader({ title }: { title: string }) {
 				</span>
 			</Link>
 
-			<h1 className="text-[24px]">{title}</h1>
+			<h1 className="text-[24px]">
+				{title}
+			</h1>
 
 		</header>
 

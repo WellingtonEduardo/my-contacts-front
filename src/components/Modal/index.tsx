@@ -1,12 +1,30 @@
 
+import ReactDOM from "react-dom";
 import Button from "../Button";
+import { useEffect, useState } from "react";
 
-export default function Modal() {
-	return (
-		<div className="bg-transparent  backdrop-blur-[5px] absolute w-full h-full left-0 top-0 flex items-center justify-center">
+export default function Modal({ danger }: { danger: boolean }) {
+
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	if (!isMounted) {
+		return <></>;
+	}
+
+
+
+	return ReactDOM.createPortal(
+
+		<div className="bg-backgroundModal  backdrop-blur-[5px] absolute w-full h-full left-0 top-0 flex items-center justify-center">
 
 			<div className="w-full max-w-[450px] bg-white rounded p-6 shadow-modal">
-				<h1>Titulo do modal</h1>
+				<h1 className={danger ? "text-danger-main" : "text-gray-dark"}>
+          Titulo do modal
+				</h1>
 
 				<p>
           corpo do modal
@@ -18,14 +36,18 @@ export default function Modal() {
             Cancelar
 					</button>
 
-					<Button typeButton="button">
+					<Button typeButton="button" danger={danger}>
             Deletar
 					</Button>
 
 				</footer>
 
 			</div>
+		</div>,
+    document.getElementById("modal-root") as Element | DocumentFragment
 
-		</div>
+
+
 	);
+
 }
