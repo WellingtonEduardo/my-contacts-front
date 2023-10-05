@@ -20,7 +20,7 @@ export default function ErrorMessage({ handleTryAgain }: ErrorMessage) {
 				<strong className="text-[22px] text-danger-main block mb-2">
           Ocorreu um erro ao obter os seus contatos!
 				</strong>
-				<Button typeButton="button" handleTryAgain={handleTryAgain} >
+				<Button typeButton="button" handleFunctions={handleTryAgain} >
           Tentar Novamente
 				</Button>
 

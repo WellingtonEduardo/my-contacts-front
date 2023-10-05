@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import Spinner from "../Spinner";
+import ReactPortal from "../ReactPortal";
 
-export default function Loader({ isLoader }: { isLoader: boolean }) {
+export default function Loader({ isLoading }: { isLoading: boolean }) {
 
 	const [isMounted, setIsMounted] = useState(false);
 
@@ -15,18 +15,21 @@ export default function Loader({ isLoader }: { isLoader: boolean }) {
 	}
 
 
-	if (!isLoader) {
+	if (!isLoading) {
 		return null;
 	}
 
-	return ReactDOM.createPortal(
-		<div className=" w-full h-full fixed top-0 left-0 bg-backgroundLoader flex items-center justify-center">
+	return (
+		<ReactPortal containerId="loader-root">
 
-			<Spinner size={"text-[90px]"}/>
+			<div className=" w-full h-full fixed top-0 left-0 bg-backgroundLoader flex items-center justify-center">
 
-		</div>,
+				<Spinner size={"text-[90px]"} />
 
-    document.getElementById("loader-root") as Element | DocumentFragment
+			</div>
+
+		</ReactPortal>
+
 	);
 
 

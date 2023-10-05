@@ -41,6 +41,31 @@ class HttpClient {
 
 	}
 
+	put(path: string, options: {
+    body: ContactProps,
+    headers?: object
+  }) {
+
+		return this.makeRequest(path, {
+			body: options?.body,
+			headers: options?.headers,
+			method: "PUT"
+		});
+
+	}
+
+	delete(path: string, options?: {
+    headers?: object
+  }) {
+
+		return this.makeRequest(path, {
+			headers: options?.headers,
+			method: "DELETE"
+		});
+
+	}
+
+
 
 	async makeRequest(path: string, options: OptionProps) {
 

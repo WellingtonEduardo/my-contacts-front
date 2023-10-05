@@ -1,9 +1,33 @@
-
-import ReactDOM from "react-dom";
 import Button from "../Button";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import ReactPortal from "../ReactPortal";
 
-export default function Modal({ danger }: { danger: boolean }) {
+
+interface ModalProps {
+  danger?: boolean,
+  title: string,
+  cancelLabel?: string,
+  confirmLabel?: string,
+  onCancel: () => void,
+  onConfirm: () => void,
+  visible: boolean,
+  isLoading?: boolean,
+  children: ReactNode
+}
+
+
+
+export default function Modal({
+	danger = false,
+	title,
+	cancelLabel = "Cancelar",
+	confirmLabel = "Confirmar",
+	onCancel,
+	onConfirm,
+	visible,
+	isLoading = true,
+	children
+}: ModalProps) {
 
 	const [isMounted, setIsMounted] = useState(false);
 
@@ -12,42 +36,54 @@ export default function Modal({ danger }: { danger: boolean }) {
 	}, []);
 
 	if (!isMounted) {
-		return <></>;
+		return null;
+	}
+
+	if (!visible) {
+		return null;
 	}
 
 
 
-	return ReactDOM.createPortal(
 
-		<div className="bg-backgroundModal  backdrop-blur-[5px] absolute w-full h-full left-0 top-0 flex items-center justify-center">
+	return (
+		<ReactPortal containerId="modal-root">
+			<div className="bg-backgroundModal  backdrop-blur-[5px] fixed w-full h-full left-0 top-0 flex items-center justify-center">
 
-			<div className="w-full max-w-[450px] bg-white rounded p-6 shadow-modal">
-				<h1 className={danger ? "text-danger-main" : "text-gray-dark"}>
-          Titulo do modal
-				</h1>
+				<div className="w-full max-w-[450px] bg-white rounded p-6 shadow-modal">
+					<h1 className={danger ? "text-danger-main" : "text-gray-dark"}>
+						{title}
+					</h1>
 
-				<p>
-          corpo do modal
-				</p>
+					<div className="mt-8">
+						{children}
+					</div>
 
-				<footer className="mt-8 flex items-center justify-end">
 
-					<button type="button" className="bg-transparent border-none text-[16px] mr-2 text-gray-light">
-            Cancelar
-					</button>
+					<footer className="mt-8 flex items-center justify-end">
 
-					<Button typeButton="button" danger={danger}>
-            Deletar
-					</Button>
+						<button type="button" className="bg-transparent border-none text-[16px] mr-6 text-gray-light"
+							onClick={onCancel}
+							disabled={isLoading}
+						>
+							{cancelLabel}
+						</button>
 
-				</footer>
+						<Button typeButton="button" danger={danger} handleFunctions={onConfirm}
+							isLoading={isLoading}
+						>
+							{confirmLabel}
+						</Button>
 
+					</footer>
+
+				</div>
 			</div>
-		</div>,
-    document.getElementById("modal-root") as Element | DocumentFragment
-
-
-
+		</ReactPortal>
 	);
+
+
+
+
 
 }

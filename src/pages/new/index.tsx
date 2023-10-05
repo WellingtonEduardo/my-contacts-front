@@ -1,6 +1,8 @@
 import ContactsService from "@/services/ContactsService";
 import ContactForm from "../../components/ContactForm";
 import PageHeader from "../../components/PageHeader";
+import toast from "@/utils/toast";
+import { useRef } from "react";
 
 interface FormDataProps {
   name: string,
@@ -9,7 +11,24 @@ interface FormDataProps {
   categoryId: string
 }
 
+interface RefProps {
+  name: string;
+  email: string;
+  phone: string;
+  category_id: string;
+}
+
+interface ContactFormRef {
+  setFieldsValues: (contact: RefProps) => void;
+  resetFields: () => void
+}
+
+
+
 export default function NewContact() {
+
+	const contactFormRef = useRef<ContactFormRef | null>(null);
+
 
 
 	async function handleSubmit(formData: FormDataProps) {
@@ -21,13 +40,16 @@ export default function NewContact() {
 				category_id: formData.categoryId
 			};
 
-			const response = await ContactsService.createContact(contact);
+			await ContactsService.createContact(contact);
 
-			return response;
+			toast({ type: "success", text: "Contato criado com sucesso!" });
 
+			contactFormRef.current?.resetFields();
 
 		} catch (error) {
-			alert(error);
+			toast({ type: "danger", text: "Ocorreu um erro ao criar o contato!" });
+
+
 		}
 
 	}
@@ -38,7 +60,9 @@ export default function NewContact() {
 			<PageHeader
 				title="Novo Contato"
 			/>
-			<ContactForm onSubmit={handleSubmit} buttonLabel="Cadastrar" />
+			<ContactForm onSubmit={handleSubmit} buttonLabel="Cadastrar"
+				ref={contactFormRef}
+			/>
 
 		</>
 	);

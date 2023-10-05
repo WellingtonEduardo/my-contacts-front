@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import { Sora } from "next/font/google";
 import Head from "next/head";
 
+
 const sora = Sora({
 	weight: ["200", "300", "400", "500", "700", "800"],
 	subsets: ["latin"]

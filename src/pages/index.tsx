@@ -15,6 +15,8 @@ import magnifierQuestion from "@/assets/images/magnifier-question.svg";
 import ContactsService from "@/services/ContactsService";
 import ErrorMessage from "@/components/ErrorMessage";
 import Loader from "@/components/Loader";
+import Modal from "@/components/Modal";
+import toast from "@/utils/toast";
 
 
 
@@ -39,8 +41,11 @@ export default function Home({ contactsDb, err }: HomeProps) {
 	const [contacts, setContacts] = useState<ContactsProps[]>(contactsDb);
 	const [orderBy, setOrderBy] = useState("asc");
 	const [searchTerm, setSearchTerm] = useState("");
-	const [isLoader, setIsLoader] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [hasError, setHasError] = useState(err);
+	const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+	const [contactBeingDeleted, setContactBeingDeleted] = useState<ContactsProps | null>(null);
+	const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
 	const filteredContacts = useMemo(() => contacts.filter(contact => (
 		contact.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -53,10 +58,9 @@ export default function Home({ contactsDb, err }: HomeProps) {
 		try {
 			const newOrder = orderBy === "asc" ? "desc" : "asc";
 			setOrderBy(newOrder);
-			setIsLoader(true);
+			setIsLoading(true);
 
 			const contactsList = await ContactsService.listContacts(newOrder);
-			console.log(contactsList);
 
 			setHasError(false);
 			setContacts(contactsList);
@@ -65,7 +69,7 @@ export default function Home({ contactsDb, err }: HomeProps) {
 			setHasError(true);
 
 		} finally {
-			setIsLoader(false);
+			setIsLoading(false);
 		}
 
 	}
@@ -76,12 +80,69 @@ export default function Home({ contactsDb, err }: HomeProps) {
 	}
 
 
+	function handleDeleteContact(contact: ContactsProps) {
+		setIsDeleteModalVisible(true);
+		setContactBeingDeleted(contact);
+	}
+
+	function handleCloseDeleteModal() {
+		setIsDeleteModalVisible(false);
+		setContactBeingDeleted(null);
+	}
+
+
+	async function handleConfirmDeleteContact() {
+		try {
+			if (!contactBeingDeleted?.id) {
+				return;
+			}
+			setIsLoadingDelete(true);
+			await ContactsService.deleteContact(contactBeingDeleted?.id);
+
+			setContacts((prevState) => (
+				prevState.filter((contact) => contact.id !== contactBeingDeleted.id)
+			));
+
+			handleCloseDeleteModal();
+
+
+			toast({
+				type: "success",
+				text: "Contato deletado com sucesso!"
+			});
+
+		} catch {
+			toast({
+				type: "danger",
+				text: "Ocorreu um erro ao deletar o contato!"
+			});
+		} finally {
+			setIsLoadingDelete(false);
+		}
+
+
+	}
+
 
 
 	return (
 		<div className="mt-8">
 
-			<Loader isLoader={isLoader}/>
+			<Loader isLoading={isLoading} />
+
+			<Modal
+				isLoading={isLoadingDelete}
+				visible={isDeleteModalVisible}
+				danger
+				title={`Tem certeza que deseja remover o contato "${contactBeingDeleted?.name}"?`}
+				confirmLabel="Deletar"
+				onCancel={handleCloseDeleteModal}
+				onConfirm={handleConfirmDeleteContact}
+			>
+				<p>Esta ação não poderá ser desfeita! </p>
+
+			</Modal>
+
 
 			{(!hasError && contacts.length > 0) && (
 				<div className="w-full">
@@ -124,7 +185,7 @@ export default function Home({ contactsDb, err }: HomeProps) {
 			{!hasError && (
 				<>
 
-					{(contacts.length < 1 && !isLoader) && (
+					{(contacts.length < 1 && !isLoading) && (
 						<div className="mt-4 flex flex-col items-center">
 							<Image src={emptyBox} alt="emptyBox" />
 							<p className="text-gray-light text-center mt-2">
@@ -196,7 +257,9 @@ export default function Home({ contactsDb, err }: HomeProps) {
 									<Image src={edit} alt="Edit" />
 								</Link>
 
-								<button type="button" className="bg-transparent border-none ml-2">
+								<button type="button" className="bg-transparent border-none ml-2"
+									onClick={() => { handleDeleteContact(contact); }}
+								>
 									<Image src={trash} alt="Delete" />
 								</button>
 

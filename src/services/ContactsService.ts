@@ -19,16 +19,34 @@ class ContactsService {
 
 
 
-	async listContacts(orderBy: string = "asc") {
+	listContacts(orderBy: string = "asc") {
 
 		return this.httpClient.get(`/contacts?orderBy=${orderBy}`);
 
 	}
 
+	getContactById(id: string) {
 
-	async createContact(contact: ContactProps) {
+		return this.httpClient.get(`/contacts/${id}`);
+
+	}
+
+
+
+	createContact(contact: ContactProps) {
 		return this.httpClient.post("/contacts", { body: contact });
 	}
+
+
+	updateContact(id: string, contact: ContactProps) {
+		return this.httpClient.put(`/contacts/${id}`, { body: contact });
+	}
+
+	deleteContact(id: string) {
+		return this.httpClient.delete(`/contacts/${id}`);
+	}
+
+
 
 
 }
