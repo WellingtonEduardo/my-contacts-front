@@ -1,16 +1,26 @@
 
+import ContactMapper from "./mappers/ContactMapper";
 import HttpClient from "./utils/HttpClient";
 
 interface ContactProps {
   name: string,
   email: string,
   phone: string,
-  category_id: string
+  categoryId: string
+}
+
+interface Contact {
+  name: string,
+  email: string,
+  phone: string,
+  id: string,
+  category_id: string | undefined,
+  category_name: string | undefined,
 }
 
 
-
 class ContactsService {
+
 	private httpClient: HttpClient;
 
 	constructor() {
@@ -19,27 +29,39 @@ class ContactsService {
 
 
 
-	listContacts(orderBy: string = "asc") {
+	async listContacts(orderBy: string = "asc") {
+		const contacts: Contact[] = await this.httpClient.get(`/contacts?orderBy=${orderBy}`);
 
-		return this.httpClient.get(`/contacts?orderBy=${orderBy}`);
+
+
+		return contacts.map(contact => ContactMapper.toDomain(contact)
+		);
+
+
 
 	}
 
-	getContactById(id: string) {
+	async getContactById(id: string) {
 
-		return this.httpClient.get(`/contacts/${id}`);
+		const contact = await this.httpClient.get(`/contacts/${id}`);
+
+		return ContactMapper.toDomain(contact);
 
 	}
 
 
 
 	createContact(contact: ContactProps) {
-		return this.httpClient.post("/contacts", { body: contact });
+		const body = ContactMapper.toPersistence(contact);
+
+		return this.httpClient.post("/contacts", { body });
 	}
 
 
 	updateContact(id: string, contact: ContactProps) {
-		return this.httpClient.put(`/contacts/${id}`, { body: contact });
+
+		const body = ContactMapper.toPersistence(contact);
+		return this.httpClient.put(`/contacts/${id}`, { body });
 	}
 
 	deleteContact(id: string) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 interface ErrosProps {
   field: string,
@@ -10,7 +10,7 @@ export default function useErrors() {
 	const [erros, setErros] = useState<ErrosProps[]>([]);
 
 
-	function setError({ field, message }: { field: string, message: string }) {
+	const setError = useCallback(({ field, message }: { field: string, message: string }) => {
 		const errorAlreadyExists = erros.find((error) => error.field === "email");
 
 		if (errorAlreadyExists) {
@@ -22,18 +22,19 @@ export default function useErrors() {
 			{ field, message }
 		]);
 
-	}
+	}, [erros]);
 
-	function removeError(fieldName: string) {
 
+	const removeError = useCallback((fieldName: string) => {
 		setErros((prevState) => prevState.filter(
 			(error) => error.field !== fieldName));
+	}, []);
 
-	}
 
-	function getErrorMessageByFieldName(fieldName: string) {
+
+	const getErrorMessageByFieldName = useCallback((fieldName: string) => {
 		return erros.find((error) => error.field === fieldName)?.message;
-	}
+	}, [erros]);
 
 
 	return { erros, setError, removeError, getErrorMessageByFieldName };

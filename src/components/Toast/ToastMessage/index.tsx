@@ -2,7 +2,8 @@
 import checkCircle from "@/assets/images/icons/check-circle.svg";
 import xCircle from "@/assets/images/icons/x-circle.svg";
 import Image from "next/image";
-import { useEffect } from "react";
+import useToastMessage from "./useToastMessage";
+
 
 
 const toastVariation = {
@@ -20,36 +21,13 @@ interface ToastMessageProps {
   },
   onRemoveMessage: (id: number) => void
 
-
 }
-
-
 
 export default function ToastMessage({ message, onRemoveMessage }: ToastMessageProps) {
 
 	const type = message.type || "default";
 
-
-	useEffect(() => {
-		const timeoutId = setTimeout(() => {
-
-			onRemoveMessage(message.id);
-
-		}, message.duration || 7000);
-
-		return () => {
-			clearTimeout(timeoutId);
-		};
-
-	}, [message, onRemoveMessage]);
-
-
-
-
-
-	function handleRemoveToast() {
-		onRemoveMessage(message.id);
-	}
+	const { handleRemoveToast } = useToastMessage({ message, onRemoveMessage });
 
 
 	return (

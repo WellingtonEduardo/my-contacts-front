@@ -1,50 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
 import ToastMessage from "../ToastMessage";
-import { toastEventManager } from "@/utils/toast";
-
-interface messagesProps {
-  id: number,
-  type: "danger" | "default" | "success",
-  text: string
-}
-
-
+import useToastContainer from "./useToastContainer";
 
 export default function ToastContainer() {
 
-	const [messages, setMessages] = useState<messagesProps[]>([]);
-
-	useEffect(() => {
-
-		function handleAddToast({ type, text, duration }: {
-      type: "danger" | "default" | "success",
-      text: string,
-      duration?: number
-    }) {
-
-			setMessages((prevState) => [
-				...prevState,
-				{ id: Math.random(), type, text, duration }
-			]);
-
-		}
-
-
-		toastEventManager.addEvenListener("addtoast", handleAddToast);
-
-
-		return () => {
-			toastEventManager.removeListener("addtoast", handleAddToast);
-		};
-
-	}, []);
-
-
-
-	const handleRemoveMessage = useCallback((id: number) => {
-		setMessages((prvState) => prvState.filter(msg => msg.id !== id));
-	}, []);
-
+	const { handleRemoveMessage, messages } = useToastContainer();
 
 	return (
 		<div className="fixed z-[2] bottom-12 left-1/2 -translate-x-2/4">

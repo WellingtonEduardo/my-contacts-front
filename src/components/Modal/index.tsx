@@ -44,8 +44,6 @@ export default function Modal({
 	}
 
 
-
-
 	return (
 		<ReactPortal containerId="modal-root">
 			<div className="bg-backgroundModal  backdrop-blur-[5px] fixed w-full h-full left-0 top-0 flex items-center justify-center">

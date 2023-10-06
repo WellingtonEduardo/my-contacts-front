@@ -2,22 +2,17 @@ import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { ChangeEvent, useMemo, useState } from "react";
-
 import arrow from "@/assets/images/icons/arrow.svg";
 import edit from "@/assets/images/icons/edit.svg";
 import trash from "@/assets/images/icons/trash.svg";
 import emptyBox from "@/assets/images/empty-box.svg";
 import magnifierQuestion from "@/assets/images/magnifier-question.svg";
 
-
-
 import ContactsService from "@/services/ContactsService";
 import ErrorMessage from "@/components/ErrorMessage";
 import Loader from "@/components/Loader";
 import Modal from "@/components/Modal";
-import toast from "@/utils/toast";
-
+import useHome from "./useHome";
 
 
 interface ContactsProps {
@@ -25,103 +20,37 @@ interface ContactsProps {
   name: string,
   email: string,
   phone: string,
-  category_id: string | undefined,
-  category_name: string | undefined,
+  category: {
+    id: string | undefined,
+    name: string | undefined,
+  }
 }
+
 interface HomeProps {
   contactsDb: ContactsProps[],
   err: boolean
 }
 
 
-
-
 export default function Home({ contactsDb, err }: HomeProps) {
 
-	const [contacts, setContacts] = useState<ContactsProps[]>(contactsDb);
-	const [orderBy, setOrderBy] = useState("asc");
-	const [searchTerm, setSearchTerm] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const [hasError, setHasError] = useState(err);
-	const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-	const [contactBeingDeleted, setContactBeingDeleted] = useState<ContactsProps | null>(null);
-	const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+	const {
+		isLoading,
+		isLoadingDelete,
+		isDeleteModalVisible,
+		contactBeingDeleted,
+		handleCloseDeleteModal,
+		handleConfirmDeleteContact,
+		hasError,
+		handleChangeSearchTerm,
+		filteredContacts,
+		handleToggleOrderBy,
+		contacts,
+		searchTerm,
+		orderBy,
+		handleDeleteContact,
 
-	const filteredContacts = useMemo(() => contacts.filter(contact => (
-		contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-	)), [searchTerm, contacts]);
-
-
-
-
-	async function handleToggleOrderBy() {
-		try {
-			const newOrder = orderBy === "asc" ? "desc" : "asc";
-			setOrderBy(newOrder);
-			setIsLoading(true);
-
-			const contactsList = await ContactsService.listContacts(newOrder);
-
-			setHasError(false);
-			setContacts(contactsList);
-
-		} catch (error) {
-			setHasError(true);
-
-		} finally {
-			setIsLoading(false);
-		}
-
-	}
-
-
-	function handleChangeSearchTerm(event: ChangeEvent<HTMLInputElement>) {
-		setSearchTerm(event.target.value);
-	}
-
-
-	function handleDeleteContact(contact: ContactsProps) {
-		setIsDeleteModalVisible(true);
-		setContactBeingDeleted(contact);
-	}
-
-	function handleCloseDeleteModal() {
-		setIsDeleteModalVisible(false);
-		setContactBeingDeleted(null);
-	}
-
-
-	async function handleConfirmDeleteContact() {
-		try {
-			if (!contactBeingDeleted?.id) {
-				return;
-			}
-			setIsLoadingDelete(true);
-			await ContactsService.deleteContact(contactBeingDeleted?.id);
-
-			setContacts((prevState) => (
-				prevState.filter((contact) => contact.id !== contactBeingDeleted.id)
-			));
-
-			handleCloseDeleteModal();
-
-
-			toast({
-				type: "success",
-				text: "Contato deletado com sucesso!"
-			});
-
-		} catch {
-			toast({
-				type: "danger",
-				text: "Ocorreu um erro ao deletar o contato!"
-			});
-		} finally {
-			setIsLoadingDelete(false);
-		}
-
-
-	}
+	} = useHome({ contactsDb, err });
 
 
 
@@ -234,9 +163,9 @@ export default function Home({ contactsDb, err }: HomeProps) {
 
 								<div className="flex items-center">
 									<strong>{contact.name}</strong>
-									{contact.category_name && (
+									{contact.category.name && (
 										<small className="bg-primary-lighter text-primary-main font-bold uppercase p-1 rounded ml-2">
-											{contact.category_name}
+											{contact.category.name}
 										</small>
 									)}
 
@@ -282,7 +211,7 @@ export default function Home({ contactsDb, err }: HomeProps) {
 
 export const getServerSideProps: GetServerSideProps = async () => {
 
-	let contactsDb;
+	let contactsDb: ContactsProps[];
 	let err;
 
 	try {

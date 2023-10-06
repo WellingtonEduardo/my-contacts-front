@@ -1,6 +1,11 @@
-
-
+import CategoryMapper from "./mappers/CategoryMapper";
 import HttpClient from "./utils/HttpClient";
+
+
+interface CategoryProps {
+  id: string | undefined,
+  name: string | undefined,
+}
 
 class CategoriesService {
 	private httpClient: HttpClient;
@@ -9,8 +14,11 @@ class CategoriesService {
 		this.httpClient = new HttpClient("http://localhost:3001");
 	}
 
-	listCategories() {
-		return this.httpClient.get("/categories");
+	async listCategories() {
+		const categories: CategoryProps[] = await this.httpClient.get("/categories");
+
+		return categories.map(category => CategoryMapper.toDomain(category));
+
 	}
 
 
