@@ -40,6 +40,12 @@ const config: Config = {
 			},
 			animation: {
 				"spin-load": "round 1.7s infinite ease ,load 1.7s infinite ease",
+				"fadeIn": "fadeInAnimation 0.3s forwards",
+				"scaleIn": "scaleInAnimation 0.3s forwards",
+				"fadeOut": "fadeOutAnimation 0.3s forwards",
+				"scaleOut": "scaleOutAnimation 0.3s forwards",
+				"messageIn": "messageInAnimation 0.3s forwards",
+				"messageOut": "messageOutAnimation 0.3s forwards",
 			},
 
 
@@ -79,7 +85,64 @@ const config: Config = {
 					webkitTransform: "rotate(360deg)",
 					transform: "rotate(360deg)"
 				}
-			}
+			},
+			fadeInAnimation: {
+				"from": {
+					opacity: "0"
+				},
+				"to": {
+					opacity: "1"
+				}
+			},
+			fadeOutAnimation: {
+				"from": {
+					opacity: "1"
+				},
+				"to": {
+					opacity: "0"
+				}
+			},
+			scaleInAnimation: {
+				"from": {
+					transform: "scale(0)"
+				},
+				"to": {
+					transform: "scale(1)"
+				}
+
+			},
+			scaleOutAnimation: {
+				"from": {
+					transform: "scale(1)"
+				},
+				"to": {
+					transform: "scale(0)"
+				}
+
+			},
+			messageInAnimation: {
+				"from": {
+					opacity: "0",
+					transform: "translateY(100px)"
+				},
+				"to": {
+					opacity: "1",
+					transform: "translateY(0px)"
+				}
+			},
+			messageOutAnimation: {
+				"from": {
+					opacity: "1",
+					transform: "translateY(0px)"
+				},
+				"to": {
+					opacity: "0",
+					transform: "translateY(100px)"
+				}
+			},
+
+
+
 		}
 
 	},

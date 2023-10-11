@@ -1,10 +1,8 @@
-
 import checkCircle from "@/assets/images/icons/check-circle.svg";
 import xCircle from "@/assets/images/icons/x-circle.svg";
 import Image from "next/image";
 import useToastMessage from "./useToastMessage";
-
-
+import { MutableRefObject } from "react";
 
 const toastVariation = {
 	default: "bg-primary-main",
@@ -19,21 +17,54 @@ interface ToastMessageProps {
     type?: "default" | "success" | "danger",
     duration?: number
   },
-  onRemoveMessage: (id: number) => void
-
+  onRemoveMessage: (id: number) => void,
+  isLeaving: boolean,
+  animatedRef: MutableRefObject<HTMLDivElement | null>
 }
 
-export default function ToastMessage({ message, onRemoveMessage }: ToastMessageProps) {
+export default function ToastMessage({
+	message,
+	onRemoveMessage,
+	isLeaving,
+	animatedRef
+
+}: ToastMessageProps) {
 
 	const type = message.type || "default";
 
-	const { handleRemoveToast } = useToastMessage({ message, onRemoveMessage });
+	const {
+		handleRemoveToast
+	} = useToastMessage({ message, onRemoveMessage });
+
+
+
+
+
+	// useEffect(() => {
+
+	// 	function handleAnimationEnd() {
+	// 		onAnimationEnd(message.id);
+	// 	}
+	// 	const elementRef = animatedElementRef.current;
+
+	// 	if (isLeaving) {
+	// 		elementRef?.addEventListener("animationend", handleAnimationEnd);
+	// 	}
+
+	// 	return () => {
+	// 		elementRef?.removeEventListener("animationend", handleAnimationEnd);
+	// 	};
+
+	// }, [isLeaving, message.id, onAnimationEnd]);
+
+
 
 
 	return (
-		<div className={`${toastVariation[type]} py-4 px-8 text-white rounded shadow-toast flex items-center justify-center mt-3 cursor-pointer`}
+		<div className={`${toastVariation[type]} py-4 px-8 text-white rounded shadow-toast flex items-center justify-center mt-3 cursor-pointer ${isLeaving ? "animate-messageOut" : "animate-messageIn"}`}
 			onClick={handleRemoveToast}
 			tabIndex={0} role="button"
+			ref={animatedRef}
 		>
 
 			{message.type === "danger" && <Image src={xCircle} alt="x" />}

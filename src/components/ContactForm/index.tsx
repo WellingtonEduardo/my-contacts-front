@@ -6,12 +6,10 @@ import Select from "../Select";
 import Button from "../Button";
 import useContactForm from "./useContactForm";
 
-
 interface ContactFormProps {
   buttonLabel: string;
   onSubmit: (data: FormDataProps) => void;
 }
-
 
 interface FormDataProps {
   name: string;
@@ -19,7 +17,6 @@ interface FormDataProps {
   phone: string;
   categoryId: string;
 }
-
 
 interface ContactFormRef {
   setFieldsValues: (contact: RefProps) => void;
@@ -37,9 +34,9 @@ interface RefProps {
 }
 
 
-
 const ContactForm = forwardRef<ContactFormRef, ContactFormProps>(
 	({ buttonLabel, onSubmit }, ref) => {
+
 		const {
 			name,
 			email,
@@ -60,25 +57,22 @@ const ContactForm = forwardRef<ContactFormRef, ContactFormProps>(
 
 		return (
 			<form onSubmit={handleSubmit} noValidate>
-				<FormGroup error={getErrorMessageByFieldName("name")}>
 
+				<FormGroup error={getErrorMessageByFieldName("name")}>
 					<Input type="text" placeholder="Nome *" value={name}
 						error={getErrorMessageByFieldName("name")}
 						handleChange={handleNameChange}
 						disabled={isSubmitting}
 					/>
-
 				</FormGroup>
 
 				<FormGroup error={getErrorMessageByFieldName("email")}>
-
 					<Input type="email" placeholder="E-mail" value={email}
 						error={getErrorMessageByFieldName("email")}
 						handleChange={handleEmailChange}
 						disabled={isSubmitting}
 
 					/>
-
 				</FormGroup>
 
 				<FormGroup>
@@ -103,7 +97,6 @@ const ContactForm = forwardRef<ContactFormRef, ContactFormProps>(
 				</FormGroup>
 
 				<div className="mt-6">
-
 					<Button typeButton="submit"
 						wFull={true} danger={false}
 						disabled={!isFormValid}
@@ -111,7 +104,6 @@ const ContactForm = forwardRef<ContactFormRef, ContactFormProps>(
 					>
 						{buttonLabel}
 					</Button>
-
 				</div>
 
 			</form>

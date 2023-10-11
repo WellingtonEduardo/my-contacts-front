@@ -1,6 +1,7 @@
 import Button from "../Button";
 import { ReactNode, useEffect, useState } from "react";
 import ReactPortal from "../ReactPortal";
+import useAnimatedUnmount from "@/hooks/useAnimatedUnmount";
 
 
 interface ModalProps {
@@ -31,24 +32,33 @@ export default function Modal({
 
 	const [isMounted, setIsMounted] = useState(false);
 
+	const { animatedElementRef, shouldRender } = useAnimatedUnmount(visible);
+
+
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
+
+
 
 	if (!isMounted) {
 		return null;
 	}
 
-	if (!visible) {
+
+	if (!shouldRender) {
 		return null;
 	}
 
 
 	return (
 		<ReactPortal containerId="modal-root">
-			<div className="bg-backgroundModal  backdrop-blur-[5px] fixed w-full h-full left-0 top-0 flex items-center justify-center">
+			<div className={`bg-backgroundModal  backdrop-blur-[5px] fixed w-full h-full left-0 top-0 flex items-center justify-center ${visible ? "animate-fadeIn" : "animate-fadeOut"}`}
+				ref={animatedElementRef}
+			>
 
-				<div className="w-full max-w-[450px] bg-white rounded p-6 shadow-modal">
+				<div className={`w-full max-w-[450px] bg-white rounded p-6 shadow-modal ${visible ? "animate-scaleIn" : "animate-scaleOut"}`}>
+
 					<h1 className={danger ? "text-danger-main" : "text-gray-dark"}>
 						{title}
 					</h1>
@@ -59,7 +69,6 @@ export default function Modal({
 
 
 					<footer className="mt-8 flex items-center justify-end">
-
 						<button type="button" className="bg-transparent border-none text-[16px] mr-6 text-gray-light"
 							onClick={onCancel}
 							disabled={isLoading}
@@ -72,7 +81,6 @@ export default function Modal({
 						>
 							{confirmLabel}
 						</Button>
-
 					</footer>
 
 				</div>

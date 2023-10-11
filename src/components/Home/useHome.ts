@@ -27,7 +27,7 @@ interface UseHomeProps {
 export default function useHome({ contactsDb, err }: UseHomeProps) {
 
 	const [contacts, setContacts] = useState<ContactsProps[]>(contactsDb);
-	const [orderBy, setOrderBy] = useState("asc");
+	const [orderBy, setOrderBy] = useState<"asc" | "desc">("asc");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [hasError, setHasError] = useState(err);
@@ -75,7 +75,6 @@ export default function useHome({ contactsDb, err }: UseHomeProps) {
 
 	function handleCloseDeleteModal() {
 		setIsDeleteModalVisible(false);
-		setContactBeingDeleted(null);
 	}
 
 
