@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import ToastContainer from "@/components/Toast/ToastContainer";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
@@ -25,7 +24,6 @@ export default function App({ Component, pageProps }: AppProps) {
 			<ToastContainer />
 
 			<div className="px-3">
-				<Header />
 				<Component {...pageProps} />
 			</div>
 

@@ -2,7 +2,7 @@ import checkCircle from "@/assets/images/icons/check-circle.svg";
 import xCircle from "@/assets/images/icons/x-circle.svg";
 import Image from "next/image";
 import useToastMessage from "./useToastMessage";
-import { MutableRefObject } from "react";
+import { MutableRefObject, memo } from "react";
 
 const toastVariation = {
 	default: "bg-primary-main",
@@ -22,7 +22,7 @@ interface ToastMessageProps {
   animatedRef: MutableRefObject<HTMLDivElement | null>
 }
 
-export default function ToastMessage({
+function ToastMessage({
 	message,
 	onRemoveMessage,
 	isLeaving,
@@ -35,28 +35,6 @@ export default function ToastMessage({
 	const {
 		handleRemoveToast
 	} = useToastMessage({ message, onRemoveMessage });
-
-
-
-
-
-	// useEffect(() => {
-
-	// 	function handleAnimationEnd() {
-	// 		onAnimationEnd(message.id);
-	// 	}
-	// 	const elementRef = animatedElementRef.current;
-
-	// 	if (isLeaving) {
-	// 		elementRef?.addEventListener("animationend", handleAnimationEnd);
-	// 	}
-
-	// 	return () => {
-	// 		elementRef?.removeEventListener("animationend", handleAnimationEnd);
-	// 	};
-
-	// }, [isLeaving, message.id, onAnimationEnd]);
-
 
 
 
@@ -79,3 +57,6 @@ export default function ToastMessage({
 	);
 
 }
+
+
+export default memo(ToastMessage);
