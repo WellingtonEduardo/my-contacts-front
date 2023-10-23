@@ -39,6 +39,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 	let contactsDb: ContactsProps[];
 	let err;
 
+
 	try {
 		contactsDb = await ContactsService.listContacts();
 		err = false;

@@ -14,8 +14,8 @@ class CategoriesService {
 		this.httpClient = new HttpClient("http://localhost:3001");
 	}
 
-	async listCategories() {
-		const categories: CategoryProps[] = await this.httpClient.get("/categories");
+	async listCategories(signal: AbortSignal) {
+		const categories: CategoryProps[] = await this.httpClient.get("/categories", { signal});
 
 		return categories.map(category => CategoryMapper.toDomain(category));
 

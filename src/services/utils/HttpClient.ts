@@ -12,7 +12,8 @@ interface ContactProps {
 interface OptionProps {
   body?: ContactProps,
   headers?: object
-  method: string
+  method: string,
+  signal?: AbortSignal
 }
 
 
@@ -24,8 +25,9 @@ class HttpClient {
 	}
 
 
-	get(path: string, options?: { headers?: object }) {
-		return this.makeRequest(path, { method: "get", headers: options?.headers });
+	get(path: string, options?: { headers?: object , signal?: AbortSignal }) {
+
+		return this.makeRequest(path, { method: "get", headers: options?.headers , signal: options?.signal});
 	}
 
 	post(path: string, options: {
@@ -74,6 +76,7 @@ class HttpClient {
 
 		const headers = new Headers();
 
+
 		if (options.body) {
 			headers.append("Content-Type", "application/json");
 		}
@@ -84,12 +87,11 @@ class HttpClient {
 			});
 		}
 
-
-
 		const response = await fetch(`${this.baseURL}${path}`, {
 			method: options.method,
 			body: JSON.stringify(options.body),
-			headers
+			headers,
+			signal: options.signal
 		});
 
 

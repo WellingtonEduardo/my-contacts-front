@@ -39,7 +39,6 @@ export default function useNewContact() {
 		try {
 
 			await ContactsService.createContact(contact);
-
 			toast({ type: "success", text: "Contato criado com sucesso!" });
 
 			contactFormRef.current?.resetFields();

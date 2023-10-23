@@ -1,22 +1,8 @@
-import ContactForm from "../../components/ContactForm";
-import PageHeader from "../../components/PageHeader";
-import useNewContact from "./useNewContact";
+import NewContact from "@/components/NewContact";
+
+export default function New() {
 
 
 
-export default function NewContact() {
-
-	const { contactFormRef, handleSubmit } = useNewContact();
-
-	return (
-		<>
-			<PageHeader
-				title="Novo Contato"
-			/>
-			<ContactForm onSubmit={handleSubmit} buttonLabel="Cadastrar"
-				ref={contactFormRef}
-			/>
-
-		</>
-	);
+	return <NewContact/>;
 }

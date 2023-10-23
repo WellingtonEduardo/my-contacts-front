@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useDeferredValue, useMemo, useState } from "react";
 
 import toast from "@/utils/toast";
 import ContactsService from "@/services/ContactsService";
@@ -35,9 +35,13 @@ export default function useHome({ contactsDb, err }: UseHomeProps) {
 	const [contactBeingDeleted, setContactBeingDeleted] = useState<ContactsProps | null>(null);
 	const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
+
+	const deferredSearchTerm = useDeferredValue(searchTerm);
+
+
 	const filteredContacts = useMemo(() => contacts.filter(contact => (
-		contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-	)), [searchTerm, contacts]);
+		contact.name.toLowerCase().includes(deferredSearchTerm.toLowerCase())
+	)), [deferredSearchTerm, contacts]);
 
 
 

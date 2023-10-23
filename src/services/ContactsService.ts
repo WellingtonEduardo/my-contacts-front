@@ -41,9 +41,9 @@ class ContactsService {
 
 	}
 
-	async getContactById(id: string) {
+	async getContactById(id: string, signal: AbortSignal) {
 
-		const contact = await this.httpClient.get(`/contacts/${id}`);
+		const contact = await this.httpClient.get(`/contacts/${id}`, { signal });
 
 		return ContactMapper.toDomain(contact);
 

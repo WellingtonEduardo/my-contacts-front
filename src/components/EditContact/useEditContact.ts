@@ -46,12 +46,13 @@ export default function useEditContact() {
 
 	useEffect(() => {
 		const id = router.query.id;
+		const controller = new AbortController();
 
 		async function loadContact() {
 
 			try {
 
-				const contactData = await ContactsService.getContactById(id as string);
+				const contactData = await ContactsService.getContactById(id as string, controller.signal);
 
 
 				if (isMounted()) {
@@ -62,20 +63,27 @@ export default function useEditContact() {
 
 			} catch (error) {
 
+				if (error instanceof DOMException && error.name === "AbortError") {
+					return;
+				}
+
 				if (isMounted()) {
 					router.push("/");
 					toast({ type: "danger", text: "Contato nâo existe", duration: 3000 });
 				}
 
+
 			}
-
-
 		}
-
 
 		if (id) {
 			loadContact();
 		}
+
+		return () => {
+			controller.abort();
+		};
+
 
 	}, [isMounted, router]);
 

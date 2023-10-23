@@ -46,7 +46,7 @@ export default function Home({ contactsDb, err }: HomeProps) {
 
 	const hasContacts = !hasError && contacts.length > 0;
 	const isListEmpty = !hasError && (!isLoading && !hasContacts);
-	const isSearchEmpty = !hasError && (hasContacts && filteredContacts.length < 1);
+	const isSearchEmpty = !hasError && (hasContacts && filteredContacts.length < 1 );
 
 
 	return (

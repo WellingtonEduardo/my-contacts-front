@@ -80,11 +80,19 @@ export default function useContactForm({ onSubmit, ref }: UseContactFormProps) {
 
 	useEffect(() => {
 
+		const controller = new AbortController();
+
 		async function loadCategories() {
+
 			try {
-				const categoriesList = await CategoriesService.listCategories();
+				const categoriesList = await CategoriesService.listCategories(controller.signal);
 				setCategories(categoriesList);
-			} catch { }
+			} catch(error) {
+				if (error instanceof DOMException && error.name === "AbortError") {
+					return;
+				}
+
+			}
 			finally {
 				setLoadingCategories(false);
 			}
@@ -92,6 +100,10 @@ export default function useContactForm({ onSubmit, ref }: UseContactFormProps) {
 		}
 
 		loadCategories();
+
+		return ()=>{
+			controller.abort();
+		};
 
 	}, []);
 
